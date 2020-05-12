@@ -9,25 +9,36 @@ import jsonApi from './api.json';
 })
 export class AppComponent implements OnInit {
   private words: IWord[] = jsonApi;
+  private shuffledWords: IWord[];
   public bundledWords: Array<IWord[]> = [];
-  public page = 1;
+  public page: number;
 
   ngOnInit() {
+    this.shuffledWords = JSON.parse(
+      localStorage.getItem('allWords') || 'false'
+    );
+
+    if (!this.shuffledWords) {
+      this.shuffledWords = this.shuffle(this.words);
+      localStorage.setItem('allWords', JSON.stringify(this.shuffledWords));
+    }
+
+    this.page = +localStorage.getItem('page') || 1;
     this.bundle();
   }
 
   public nextPage() {
     this.page++;
+    localStorage.setItem('page', this.page + '');
   }
 
   private bundle() {
     let bundle: IWord[] = [];
 
-    for (let i = 1; i <= this.words.length; i++) {
-      const word = this.words[i - 1];
+    for (let i = 1; i <= this.shuffledWords.length; i++) {
+      const word = this.shuffledWords[i - 1];
       const bundleSize = 24;
       word.id = i;
-      // word['showAnswer'] = false;
       bundle.push(word);
 
       if (i % bundleSize === 0 && i !== 0) {
@@ -35,5 +46,21 @@ export class AppComponent implements OnInit {
         bundle = [];
       }
     }
+  }
+
+  private shuffle(array) {
+    let currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
   }
 }
