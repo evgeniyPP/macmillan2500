@@ -9,43 +9,74 @@ import jsonApi from './api.json';
 })
 export class AppComponent implements OnInit {
   private words: IWord[] = jsonApi;
-  private shuffledWords: IWord[];
+  private incorrectWords: IWord[];
   public bundledWords: Array<IWord[]> = [];
   public page: number;
+  public completed: number;
+
+  constructor() {
+    window.onbeforeunload = () => {
+      localStorage.setItem('incorrect', JSON.stringify(this.incorrectWords));
+    };
+  }
 
   ngOnInit() {
-    this.shuffledWords = JSON.parse(
-      localStorage.getItem('allWords') || 'false'
-    );
+    this.bundledWords = JSON.parse(localStorage.getItem('allWords') || 'false');
 
-    if (!this.shuffledWords) {
-      this.shuffledWords = this.shuffle(this.words);
-      localStorage.setItem('allWords', JSON.stringify(this.shuffledWords));
+    if (!this.bundledWords) {
+      const shuffledWords = this.shuffle(this.words);
+      this.bundledWords = this.bundle(shuffledWords);
+      localStorage.setItem('allWords', JSON.stringify(this.bundledWords));
     }
 
     this.page = +localStorage.getItem('page') || 1;
-    this.bundle();
+
+    this.completed = this.countCompleted();
+
+    this.incorrectWords = JSON.parse(localStorage.getItem('incorrect')) || [];
   }
 
   public nextPage() {
     this.page++;
     localStorage.setItem('page', this.page + '');
+    localStorage.setItem('incorrect', JSON.stringify(this.incorrectWords));
+
+    this.completed = this.countCompleted();
   }
 
-  private bundle() {
+  public onAnswerEmit({ id, word, translation }: IWord) {
+    const isExists =
+      this.incorrectWords.length &&
+      this.incorrectWords.find((w) => w.id === id);
+
+    if (isExists) {
+      return;
+    }
+
+    this.incorrectWords.push({
+      id,
+      word,
+      translation,
+    });
+  }
+
+  private bundle(words: IWord[]) {
+    const bundledWords: Array<IWord[]> = [];
     let bundle: IWord[] = [];
 
-    for (let i = 1; i <= this.shuffledWords.length; i++) {
-      const word = this.shuffledWords[i - 1];
+    for (let i = 1; i <= words.length; i++) {
+      const word = words[i - 1];
       const bundleSize = 24;
       word.id = i;
       bundle.push(word);
 
       if (i % bundleSize === 0 && i !== 0) {
-        this.bundledWords.push(bundle);
+        bundledWords.push(bundle);
         bundle = [];
       }
     }
+
+    return bundledWords;
   }
 
   private shuffle(array) {
@@ -62,5 +93,9 @@ export class AppComponent implements OnInit {
     }
 
     return array;
+  }
+
+  private countCompleted(): number {
+    return Math.floor((this.page * 100) / this.bundledWords.length);
   }
 }

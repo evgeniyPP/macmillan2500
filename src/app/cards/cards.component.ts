@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { IWord } from '../word';
 
@@ -9,6 +9,7 @@ import { IWord } from '../word';
 })
 export class CardsComponent {
   @Input() words: IWord[];
+  @Output() answerEmmiter = new EventEmitter<IWord>();
   public checkIcon = faCheck;
   public timesIcon = faTimes;
 
@@ -17,11 +18,24 @@ export class CardsComponent {
   }
 
   public correctAnswer(id: number): void {
-    this.word(id).correct = true;
+    const word = this.word(id);
+
+    if (word.incorrect) {
+      return;
+    }
+
+    word.correct = true;
   }
 
   public incorrectAnswer(id: number): void {
-    this.word(id).incorrect = true;
+    const word = this.word(id);
+
+    if (word.correct || word.incorrect) {
+      return;
+    }
+
+    word.incorrect = true;
+    this.answerEmmiter.emit(word);
   }
 
   private word(id: number): IWord {
