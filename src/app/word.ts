@@ -3,4 +3,6 @@ export interface IWord {
   translation: string;
   id?: number;
   showAnswer?: boolean;
+  correct?: boolean;
+  incorrect?: boolean;
 }

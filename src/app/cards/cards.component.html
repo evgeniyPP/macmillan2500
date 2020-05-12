@@ -1,7 +1,11 @@
-<main class="flex flex-col sm:flex-row sm:flex-wrap px-6">
+<main class="px-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-start">
   <article
     *ngFor="let word of words"
     class="mt-4 sm:w-1/2 flex flex-wrap justify-around items-center rounded overflow-hidden shadow-lg py-6"
+    [ngClass]="{
+      'bg-green-300': word.correct,
+      'bg-red-300': word.incorrect
+    }"
   >
     <div class="w-full flex justify-around">
       <span class="font-bold">{{ word.word }}</span>
@@ -22,11 +26,21 @@
     <div *ngIf="word.showAnswer" class="mt-4 w-full text-center">
       <p class="ml-2">{{ word.translation }}</p>
       <div class="ml-2 mt-4 mr-12 text-right">
-        <button type="button" class="w-10 h-10 bg-green-400 rounded-lg">
-          Y
+        <button
+          type="button"
+          class="w-10 h-10 text-green-400 text-xl"
+          title="Верно"
+          (click)="correctAnswer(word.id)"
+        >
+          <fa-icon [icon]="checkIcon"></fa-icon>
         </button>
-        <button type="button" class="w-10 h-10 ml-2 bg-red-400 rounded-lg">
-          N
+        <button
+          type="button"
+          class="w-10 h-10 ml-2 text-red-400 text-xl"
+          title="Ошибка"
+          (click)="incorrectAnswer(word.id)"
+        >
+          <fa-icon [icon]="timesIcon"></fa-icon>
         </button>
       </div>
     </div>

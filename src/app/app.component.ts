@@ -26,8 +26,8 @@ export class AppComponent implements OnInit {
     for (let i = 1; i <= this.words.length; i++) {
       const word = this.words[i - 1];
       const bundleSize = 24;
-      word['id'] = i;
-      word['showAnswer'] = false;
+      word.id = i;
+      // word['showAnswer'] = false;
       bundle.push(word);
 
       if (i % bundleSize === 0 && i !== 0) {
