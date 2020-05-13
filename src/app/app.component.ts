@@ -10,6 +10,8 @@ import jsonApi from './api.json';
 export class AppComponent implements OnInit {
   private words: IWord[] = jsonApi;
   private incorrectWords: IWord[];
+  private bundleSize = 24;
+  private answersCounter = 0;
   public bundledWords: Array<IWord[]> = [];
   public page: number;
   public completed: number;
@@ -37,7 +39,13 @@ export class AppComponent implements OnInit {
   }
 
   public nextPage() {
+    if (this.answersCounter !== this.bundleSize) {
+      return;
+    }
+
     this.page++;
+    this.answersCounter = 0;
+
     localStorage.setItem('page', this.page + '');
     localStorage.setItem('incorrect', JSON.stringify(this.incorrectWords));
 
@@ -45,7 +53,15 @@ export class AppComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
-  public onAnswerEmit({ id, word, translation }: IWord) {
+  public onAnswerEmit(data: IWord | null) {
+    this.answersCounter++;
+
+    if (!data) {
+      return;
+    }
+
+    const { id, word, translation } = data;
+
     const isExists =
       this.incorrectWords.length &&
       this.incorrectWords.find((w) => w.id === id);
@@ -67,11 +83,10 @@ export class AppComponent implements OnInit {
 
     for (let i = 1; i <= words.length; i++) {
       const word = words[i - 1];
-      const bundleSize = 24;
       word.id = i;
       bundle.push(word);
 
-      if (i % bundleSize === 0 && i !== 0) {
+      if (i % this.bundleSize === 0 && i !== 0) {
         bundledWords.push(bundle);
         bundle = [];
       }
@@ -98,5 +113,12 @@ export class AppComponent implements OnInit {
 
   private countCompleted(): number {
     return Math.floor((this.page * 100) / this.bundledWords.length);
+  }
+
+  public isBtnDisabled(): boolean {
+    return (
+      this.page >= this.bundledWords.length ||
+      this.answersCounter !== this.bundleSize
+    );
   }
 }

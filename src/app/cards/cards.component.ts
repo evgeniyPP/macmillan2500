@@ -25,6 +25,7 @@ export class CardsComponent {
     }
 
     word.correct = true;
+    this.answerEmmiter.emit(null);
   }
 
   public incorrectAnswer(id: number): void {
