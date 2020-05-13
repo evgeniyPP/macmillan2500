@@ -43,6 +43,10 @@ export class AppComponent implements OnInit {
       return;
     }
 
+    if (this.page >= this.bundledWords.length) {
+      return;
+    }
+
     this.page++;
     this.answersCounter = 0;
 
@@ -116,9 +120,6 @@ export class AppComponent implements OnInit {
   }
 
   public isBtnDisabled(): boolean {
-    return (
-      this.page >= this.bundledWords.length ||
-      this.answersCounter !== this.bundleSize
-    );
+    return this.answersCounter !== this.bundleSize;
   }
 }

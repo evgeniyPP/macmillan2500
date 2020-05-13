@@ -51,8 +51,8 @@
       'bg-gray-500 text-gray-400 cursor-not-allowed': isBtnDisabled(),
       'bg-blue-600 text-white': !isBtnDisabled()
     }"
-    [title]="isBtnDisabled() ? 'Чтобы пройти дальше, сначала ответьте на все карточки' : ''"
+    [title]="isBtnDisabled() ? 'Чтобы пройти дальше, ответьте на все карточки' : ''"
   >
-    Далее
+    {{ this.page < this.bundledWords.length ? 'Далее' : 'Закончить' }}
   </button>
 </div>
