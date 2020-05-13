@@ -1,12 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-finished',
   templateUrl: './finished.component.html',
   styleUrls: ['./finished.component.scss'],
 })
-export class FinishedComponent implements OnInit {
-  constructor() {}
+export class FinishedComponent {
+  constructor(private router: Router) {}
 
-  ngOnInit(): void {}
+  moveOn() {
+    const newWords = JSON.parse(localStorage.getItem('incorrect')) || [];
+
+    if (!newWords) {
+      return false;
+    }
+
+    localStorage.setItem('newWords', JSON.stringify(newWords));
+    localStorage.removeItem('incorrect');
+    localStorage.removeItem('page');
+    this.router.navigate(['/']);
+  }
+
+  download() {
+    this.router.navigate(['/']);
+  }
 }

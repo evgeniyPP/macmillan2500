@@ -1,1 +1,15 @@
-<p>finished works!</p>
+<section class="mx-4">
+  <p>Ура! Вы прошли все 2500 слов!</p>
+  <p>
+    Теперь вы можете или скачать их к себе в виде файла, или же повторить тест,
+    но уже только с неизвестными ранее словами.
+  </p>
+  <div class="mt-8 text-center">
+    <button (click)="download()" class="px-6 py-3 mx-4 mb-6 bg-blue-600 text-white rounded">
+      Скачать слова как .txt
+    </button>
+    <button (click)="moveOn()" class="px-6 py-3 mx-4 mb-6 bg-blue-600 text-white rounded">
+      Двигаться дальше
+    </button>
+  </div>
+</section>

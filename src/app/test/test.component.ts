@@ -23,7 +23,17 @@ export class TestComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.bundledWords = JSON.parse(localStorage.getItem('allWords') || 'false');
+    const newWords = JSON.parse(localStorage.getItem('newWords') || 'false');
+
+    if (newWords) {
+      localStorage.removeItem('newWords');
+      this.words = newWords;
+      this.bundledWords = null;
+    } else {
+      this.bundledWords = JSON.parse(
+        localStorage.getItem('allWords') || 'false'
+      );
+    }
 
     if (!this.bundledWords) {
       const shuffledWords = this.shuffle(this.words);
