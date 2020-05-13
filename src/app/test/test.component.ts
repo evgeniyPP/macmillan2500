@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { IWord } from './word';
-import jsonApi from './api.json';
+import { IWord } from '../word';
+import jsonApi from '../api.json';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'app-test',
+  templateUrl: './test.component.html',
+  styleUrls: ['./test.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class TestComponent implements OnInit {
   private words: IWord[] = jsonApi;
   private incorrectWords: IWord[];
   private bundleSize = 24;

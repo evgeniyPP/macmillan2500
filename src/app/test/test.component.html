@@ -1,0 +1,53 @@
+<div *ngIf="page === 1" class="m-2">
+  <p>
+    Перед вами 2500 самых распространненых слов по версии словаря
+    <a
+      href="https://www.macmillan.ru/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-blue-400"
+      >McMillan</a
+    >. Такого словарного запаса будет достаточно, чтобы свободно разговоривать
+    на бытовые темы.
+  </p>
+  <h4 class="font-bold mt-2">Порядок такой:</h4>
+  <ol>
+    <li class="ml-2">1. Постарайтесь перевести слово на карточке.</li>
+    <li class="ml-2">2. Посмотрите перевод.</li>
+    <li class="ml-2">
+      3. Если были правы, нажимите на галочку, если нет – на крестик.
+    </li>
+    <li class="ml-2">
+      4. Как только закончите со страницей, переходите на следующую. Назад
+      вернуться нельзя!
+    </li>
+    <li class="ml-2">
+      5. В конце вы получите список слов, которых не знаете.
+    </li>
+  </ol>
+  <p class="text-sm mt-2 italic">
+    Если вы знаете хотя бы один из предложенных вариантов перевода, можете
+    смело жать на галочку.
+  </p>
+  <p class="text-sm italic">
+    Тест большой, его необязательно проходить за раз. Можете закрыть страницу
+    и вернуться потом. Ответы сохранятся в памяти браузера.
+  </p>
+</div>
+<app-cards
+  (answerEmmiter)="onAnswerEmit($event)"
+  [words]="bundledWords[page - 1]"
+></app-cards>
+<p class="my-4 pr-4 text-right text-gray-600">Пройдено {{ completed }}%</p>
+<button
+  [disabled]="isBtnDisabled()"
+  (click)="nextPage()"
+  class="px-6 py-3 mx-4 mb-6 bg-blue-600 text-white rounded float-right"
+  [ngClass]="{
+    'bg-gray-500 text-gray-400 cursor-not-allowed': isBtnDisabled(),
+    'bg-blue-600 text-white': !isBtnDisabled()
+  }"
+  [title]="isBtnDisabled() ? 'Чтобы пройти дальше, ответьте на все карточки' : ''"
+>
+  {{ this.page < this.bundledWords.length ? 'Далее' : 'Закончить' }}
+</button>
