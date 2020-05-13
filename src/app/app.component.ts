@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
     localStorage.setItem('incorrect', JSON.stringify(this.incorrectWords));
 
     this.completed = this.countCompleted();
+    window.scrollTo(0, 0);
   }
 
   public onAnswerEmit({ id, word, translation }: IWord) {
