@@ -100,7 +100,7 @@ export class TestComponent implements OnInit {
       word.id = i;
       bundle.push(word);
 
-      if (i % this.bundleSize === 0 && i !== 0) {
+      if ((i % this.bundleSize === 0 && i !== 0) || i === words.length) {
         bundledWords.push(bundle);
         bundle = [];
       }
