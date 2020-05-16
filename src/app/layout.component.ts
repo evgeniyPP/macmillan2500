@@ -5,7 +5,6 @@ import { DataService } from './data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent {
   constructor(private router: Router, private dataService: DataService) {}
