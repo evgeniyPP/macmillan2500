@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService } from './../data.service';
+import { IWord } from './../word';
 
 @Component({
   selector: 'app-finished',
@@ -7,22 +9,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./finished.component.scss'],
 })
 export class FinishedComponent {
-  constructor(private router: Router) {}
+  public incorrectWords: IWord[];
+
+  constructor(private router: Router, private dataService: DataService) {
+    this.incorrectWords = this.dataService.getIncorrectWords();
+  }
 
   moveOn() {
-    const newWords = JSON.parse(localStorage.getItem('incorrect')) || [];
-
-    if (!newWords) {
-      return false;
-    }
-
-    localStorage.setItem('newWords', JSON.stringify(newWords));
-    localStorage.removeItem('incorrect');
-    localStorage.removeItem('page');
+    this.dataService.setNewWordsFromIncorrect();
+    this.dataService.initialize();
     this.router.navigate(['/']);
   }
 
   download() {
-    this.router.navigate(['/']);
+    return;
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { IWord } from '../word';
-import jsonApi from '../api.json';
+import { DataService } from './../data.service';
+import { StorageService } from './../storage.service';
 
 @Component({
   selector: 'app-test',
@@ -8,66 +10,44 @@ import jsonApi from '../api.json';
   styleUrls: ['./test.component.scss'],
 })
 export class TestComponent implements OnInit {
-  private words: IWord[] = jsonApi;
-  private incorrectWords: IWord[];
-  private bundleSize = 24;
+  public cardsCount: number;
   private answersCounter = 0;
-  public bundledWords: Array<IWord[]> = [];
+  public wordsLength: number;
   public page: number;
   public completed: number;
 
-  constructor() {
-    window.onbeforeunload = () => {
-      localStorage.setItem('incorrect', JSON.stringify(this.incorrectWords));
-    };
-  }
+  constructor(
+    private router: Router,
+    private storageService: StorageService,
+    private dataService: DataService
+  ) {}
 
   ngOnInit() {
-    const newWords = JSON.parse(localStorage.getItem('newWords') || 'false');
-
-    if (newWords) {
-      localStorage.removeItem('newWords');
-      this.words = newWords;
-      this.bundledWords = null;
-    } else {
-      this.bundledWords = JSON.parse(
-        localStorage.getItem('allWords') || 'false'
-      );
-    }
-
-    if (!this.bundledWords) {
-      const shuffledWords = this.shuffle(this.words);
-      this.bundledWords = this.bundle(shuffledWords);
-      localStorage.setItem('allWords', JSON.stringify(this.bundledWords));
-    }
-
-    this.page = +localStorage.getItem('page') || 1;
-
+    this.page = +this.storageService.get('page') || 1;
+    this.cardsCount = this.dataService.getOneBundle(this.page).length;
+    this.wordsLength = this.dataService.getAllWords().length;
     this.completed = this.countCompleted();
-
-    this.incorrectWords = JSON.parse(localStorage.getItem('incorrect')) || [];
   }
 
   public nextPage() {
-    if (this.answersCounter !== this.bundleSize) {
+    if (this.answersCounter !== this.cardsCount) {
       return;
     }
 
-    if (this.page >= this.bundledWords.length) {
-      return;
+    if (this.page >= this.wordsLength) {
+      return this.router.navigate(['/finished']);
     }
 
     this.page++;
     this.answersCounter = 0;
 
-    localStorage.setItem('page', this.page + '');
-    localStorage.setItem('incorrect', JSON.stringify(this.incorrectWords));
+    this.storageService.set('page', this.page + '');
 
     this.completed = this.countCompleted();
     window.scrollTo(0, 0);
   }
 
-  public onAnswerEmit(data: IWord | null) {
+  public onNewAnswer(data?: IWord) {
     this.answersCounter++;
 
     if (!data) {
@@ -76,60 +56,26 @@ export class TestComponent implements OnInit {
 
     const { id, word, translation } = data;
 
-    const isExists =
-      this.incorrectWords.length &&
-      this.incorrectWords.find((w) => w.id === id);
+    const incorrectWords = this.dataService.getIncorrectWords();
 
-    if (isExists) {
+    if (incorrectWords.length && incorrectWords.find((w) => w.id === id)) {
       return;
     }
 
-    this.incorrectWords.push({
+    incorrectWords.push({
       id,
       word,
       translation,
     });
-  }
 
-  private bundle(words: IWord[]) {
-    const bundledWords: Array<IWord[]> = [];
-    let bundle: IWord[] = [];
-
-    for (let i = 1; i <= words.length; i++) {
-      const word = words[i - 1];
-      word.id = i;
-      bundle.push(word);
-
-      if ((i % this.bundleSize === 0 && i !== 0) || i === words.length) {
-        bundledWords.push(bundle);
-        bundle = [];
-      }
-    }
-
-    return bundledWords;
-  }
-
-  private shuffle(array) {
-    let currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
+    this.dataService.setIncorrectWordsFromArray(incorrectWords);
   }
 
   private countCompleted(): number {
-    return Math.floor((this.page * 100) / this.bundledWords.length);
+    return Math.floor((this.page * 100) / this.wordsLength);
   }
 
   public isBtnDisabled(): boolean {
-    return this.answersCounter !== this.bundleSize;
+    return this.answersCounter !== this.cardsCount;
   }
 }

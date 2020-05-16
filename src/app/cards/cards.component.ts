@@ -1,5 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+} from '@angular/core';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { DataService } from './../data.service';
 import { IWord } from '../word';
 
 @Component({
@@ -7,11 +14,18 @@ import { IWord } from '../word';
   templateUrl: './cards.component.html',
   styleUrls: ['./cards.component.scss'],
 })
-export class CardsComponent {
-  @Input() words: IWord[];
-  @Output() answerEmmiter = new EventEmitter<IWord>();
+export class CardsComponent implements OnChanges {
+  @Input() page: number;
+  @Output() answerSelected = new EventEmitter<IWord>();
+  public words: IWord[];
   public checkIcon = faCheck;
   public timesIcon = faTimes;
+
+  constructor(private dataService: DataService) {}
+
+  ngOnChanges() {
+    this.words = this.dataService.getOneBundle(this.page);
+  }
 
   public showAnswer(id: number): void {
     this.word(id).showAnswer = true;
@@ -25,7 +39,7 @@ export class CardsComponent {
     }
 
     word.correct = true;
-    this.answerEmmiter.emit(null);
+    this.answerSelected.emit();
   }
 
   public incorrectAnswer(id: number): void {
@@ -36,7 +50,7 @@ export class CardsComponent {
     }
 
     word.incorrect = true;
-    this.answerEmmiter.emit(word);
+    this.answerSelected.emit(word);
   }
 
   private word(id: number): IWord {

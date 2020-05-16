@@ -5,10 +5,36 @@
     но уже только с неизвестными ранее словами.
   </p>
   <div class="mt-8 text-center">
-    <button (click)="download()" class="px-6 py-3 mx-4 mb-6 bg-blue-600 text-white rounded">
+    <button
+      (click)="download()"
+      [disabled]="!incorrectWords.length"
+      [ngClass]="{
+        'bg-gray-500 text-gray-400 cursor-not-allowed': !incorrectWords.length,
+        'bg-blue-600 text-white': incorrectWords.length
+      }"
+      [title]="
+        !incorrectWords.length
+          ? 'Вы знаете все 2500 слов. Поздравляем!'
+          : 'Начать заново, но уже только с неизвестными словами'
+      "
+      class="px-6 py-3 mx-4 mb-6 rounded"
+    >
       Скачать слова как .txt
     </button>
-    <button (click)="moveOn()" class="px-6 py-3 mx-4 mb-6 bg-blue-600 text-white rounded">
+    <button
+      (click)="moveOn()"
+      [disabled]="!incorrectWords.length"
+      [ngClass]="{
+        'bg-gray-500 text-gray-400 cursor-not-allowed': !incorrectWords.length,
+        'bg-blue-600 text-white': incorrectWords.length
+      }"
+      [title]="
+        !incorrectWords.length
+          ? 'Вы знаете все 2500 слов. Поздравляем!'
+          : 'Начать заново, но уже только с неизвестными словами'
+      "
+      class="px-6 py-3 mx-4 mb-6 rounded"
+    >
       Двигаться дальше
     </button>
   </div>

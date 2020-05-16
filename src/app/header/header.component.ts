@@ -9,6 +9,10 @@ export class HeaderComponent {
   @Output() restartClicked = new EventEmitter();
 
   public restart() {
-    this.restartClicked.emit();
+    const isUserAgreed = confirm('Вы уверены? Весь ваш прогресс потеряется.');
+
+    if (isUserAgreed) {
+      this.restartClicked.emit();
+    }
   }
 }

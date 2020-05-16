@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { DataService } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -6,11 +8,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent {
-  public restart() {
-    localStorage.removeItem('allWords');
-    localStorage.removeItem('incorrect');
-    localStorage.removeItem('page');
+  constructor(private router: Router, private dataService: DataService) {}
 
-    location.reload();
+  public restart() {
+    this.dataService.restart();
+
+    if (this.router.url === '/') {
+      window.location.reload();
+    } else {
+      this.router.navigate(['/']).then(() => window.location.reload());
+    }
   }
 }
