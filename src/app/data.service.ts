@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
-import { bundleSize } from './globals';
 import { IWord } from './word';
 import jsonData from './api.json';
 
@@ -11,6 +10,7 @@ export class DataService {
   private words: Array<IWord[]>;
   private unsortedWords: IWord[];
   private incorrectWords: IWord[];
+  private bundleSize = 24;
 
   constructor(private storageService: StorageService) {
     this.initialize();
@@ -123,7 +123,7 @@ export class DataService {
       word.id = i;
       bundle.push(word);
 
-      if ((i % bundleSize === 0 && i !== 0) || i === words.length) {
+      if ((i % this.bundleSize === 0 && i !== 0) || i === words.length) {
         bundledWords.push(bundle);
         bundle = [];
       }

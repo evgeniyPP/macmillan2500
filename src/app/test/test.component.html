@@ -1,4 +1,4 @@
-<div *ngIf="page === 1" class="m-2">
+<div *ngIf="page === 1" id="intro" class="m-2">
   <p>
     Перед вами 2500 самых распространненых слов по версии словаря
     <a
@@ -38,10 +38,11 @@
   (answerSelected)="onNewAnswer($event)"
   [page]="page"
 ></app-cards>
-<p class="my-4 pr-4 text-right text-gray-600">Пройдено {{ completed }}%</p>
+<p id="completed" class="my-4 pr-4 text-right text-gray-600">Пройдено {{ completed }}%</p>
 <button
   [disabled]="isBtnDisabled()"
   (click)="nextPage()"
+  id="nextPage"
   class="px-6 py-3 mx-4 mb-6 rounded float-right"
   [ngClass]="{
     'bg-gray-500 text-gray-400 cursor-not-allowed': isBtnDisabled(),

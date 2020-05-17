@@ -10,10 +10,10 @@ import { StorageService } from './../storage.service';
 })
 export class TestComponent implements OnInit {
   public cardsCount: number;
-  private answersCounter = 0;
   public wordsLength: number;
   public page: number;
   public completed: number;
+  private answersCounter = 0;
 
   constructor(
     private router: Router,
