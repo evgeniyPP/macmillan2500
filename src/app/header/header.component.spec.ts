@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { HeaderComponent } from './header.component';
 
@@ -8,9 +9,8 @@ describe('HeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ]
-    })
-    .compileComponents();
+      declarations: [HeaderComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +19,12 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should call restart() when restart button is clicked', () => {
+    spyOn(component, 'restart');
+    const button = fixture.debugElement.query(By.css('.restart'));
+
+    button.triggerEventHandler('click', null);
+
+    expect(component.restart).toHaveBeenCalled();
   });
 });
