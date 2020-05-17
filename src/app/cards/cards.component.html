@@ -12,7 +12,7 @@
       <button
         (click)="showAnswer(word.id)"
         type="button"
-        class="ml-2"
+        class="show-answer ml-2"
         [ngClass]="{
           'text-blue-400 underline': !word.showAnswer,
           'text-gray-400': word.showAnswer
@@ -28,7 +28,7 @@
       <div class="ml-2 mt-4 mr-12 text-right">
         <button
           type="button"
-          class="w-10 h-10 text-green-400 text-xl"
+          class="correct w-10 h-10 text-green-400 text-xl"
           title="Верно"
           (click)="correctAnswer(word.id)"
         >
@@ -36,7 +36,7 @@
         </button>
         <button
           type="button"
-          class="w-10 h-10 ml-2 text-red-400 text-xl"
+          class="incorrect w-10 h-10 ml-2 text-red-400 text-xl"
           title="Ошибка"
           (click)="incorrectAnswer(word.id)"
         >
