@@ -7,7 +7,7 @@ import jsonData from './api.json';
   providedIn: 'root',
 })
 export class DataService {
-  private words: Array<IWord[]>;
+  private words: IWord[][];
   private unsortedWords: IWord[];
   private incorrectWords: IWord[];
   private bundleSize = 24;
@@ -38,7 +38,7 @@ export class DataService {
     this.setIncorrectWordsFromStorage();
   }
 
-  public getAllWords(): Array<IWord[]> {
+  public getAllWords(): IWord[][] {
     if (!this.words) {
       throw new Error('words is missing');
     }
@@ -115,7 +115,7 @@ export class DataService {
   }
 
   private bundle(words: IWord[]) {
-    const bundledWords: Array<IWord[]> = [];
+    const bundledWords: IWord[][] = [];
     let bundle: IWord[] = [];
 
     for (let i = 1; i <= words.length; i++) {
