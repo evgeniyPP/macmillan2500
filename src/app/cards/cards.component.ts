@@ -27,11 +27,11 @@ export class CardsComponent implements OnChanges {
   }
 
   public showAnswer(id: number): void {
-    this.word(id).showAnswer = true;
+    this.getWord(id).showAnswer = true;
   }
 
   public correctAnswer(id: number): void {
-    const word = this.word(id);
+    const word = this.getWord(id);
 
     if (word.incorrect) {
       return;
@@ -42,7 +42,7 @@ export class CardsComponent implements OnChanges {
   }
 
   public incorrectAnswer(id: number): void {
-    const word = this.word(id);
+    const word = this.getWord(id);
 
     if (word.correct || word.incorrect) {
       return;
@@ -52,7 +52,7 @@ export class CardsComponent implements OnChanges {
     this.answerSelected.emit(word);
   }
 
-  private word(id: number): IWord {
+  private getWord(id: number): IWord {
     return this.words.find((w) => w.id === id);
   }
 }
