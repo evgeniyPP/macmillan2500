@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import {
   Component,
   Input,
@@ -15,14 +16,19 @@ import { IWord } from '../word';
 })
 export class CardsComponent implements OnChanges {
   @Input() page: number;
+  @Input() wordsLength: number;
   @Output() answerSelected = new EventEmitter<IWord>();
   public words: IWord[];
   public checkIcon = faCheck;
   public timesIcon = faTimes;
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private router: Router) {}
 
   ngOnChanges() {
+    if (this.page > this.wordsLength) {
+      return this.router.navigate(['/finished']);
+    }
+
     this.words = this.dataService.getOneBundle(this.page);
   }
 

@@ -37,6 +37,7 @@
 <app-cards
   (answerSelected)="onNewAnswer($event)"
   [page]="page"
+  [wordsLength]="this.wordsLength"
 ></app-cards>
 <p id="completed" class="my-4 pr-4 text-right text-gray-600">Пройдено {{ completed }}%</p>
 <button

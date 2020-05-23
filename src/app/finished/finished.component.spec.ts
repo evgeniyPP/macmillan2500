@@ -49,24 +49,40 @@ describe('FinishedComponent', () => {
       expect(buttons.length).toBe(2);
     });
 
-    it('should call moveOn() when moveOn button is clicked', () => {
-      spyOn(component, 'moveOn');
-      const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
-      const moveOnBtn = buttons[1];
+    describe('moveOn()', () => {
+      it('should call been called if moveOn button is clicked', () => {
+        spyOn(component, 'moveOn');
+        const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
+        const moveOnBtn = buttons[1];
 
-      moveOnBtn.triggerEventHandler('click', null);
+        moveOnBtn.triggerEventHandler('click', null);
 
-      expect(component.moveOn).toHaveBeenCalled();
+        expect(component.moveOn).toHaveBeenCalled();
+      });
     });
 
-    it('should call download() when download button is clicked', () => {
-      spyOn(component, 'download');
-      const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
-      const downloadBtn = buttons[0];
+    describe('download()', () => {
+      it('should been called if download button is clicked', () => {
+        spyOn(component, 'download');
+        const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
+        const downloadBtn = buttons[0];
 
-      downloadBtn.triggerEventHandler('click', null);
+        downloadBtn.triggerEventHandler('click', null);
 
-      expect(component.download).toHaveBeenCalled();
+        expect(component.download).toHaveBeenCalled();
+      });
+
+      it('should send a file to download', () => {
+        const spyObj = jasmine.createSpyObj('a', ['click']);
+        spyOn(document, 'createElement').and.returnValue(spyObj);
+        const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
+        const downloadBtn = buttons[0];
+
+        downloadBtn.triggerEventHandler('click', null);
+
+        expect(document.createElement).toHaveBeenCalledTimes(1);
+        expect(document.createElement).toHaveBeenCalledWith('a');
+      });
     });
 
     describe('should show the correct title', () => {

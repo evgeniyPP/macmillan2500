@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { CardsComponent } from './cards.component';
 import { DataService } from './../data.service';
@@ -25,14 +26,19 @@ describe('CardsComponent', () => {
   let component: CardsComponent;
   let fixture: ComponentFixture<CardsComponent>;
   let mockDataService;
+  let mockRouter;
   let BUNDLE;
 
   beforeEach(async(() => {
     mockDataService = jasmine.createSpyObj(['getOneBundle']);
+    mockRouter = jasmine.createSpyObj(['navigate']);
 
     TestBed.configureTestingModule({
       declarations: [WrapperComponent, CardsComponent, FaIcon],
-      providers: [{ provide: DataService, useValue: mockDataService }],
+      providers: [
+        { provide: DataService, useValue: mockDataService },
+        { provide: Router, useValue: mockRouter },
+      ],
     }).compileComponents();
   }));
 
@@ -69,6 +75,15 @@ describe('CardsComponent', () => {
     wrapperFixture.detectChanges();
 
     expect(cards[0].nativeElement.textContent).toContain(BUNDLE[0].translation);
+  });
+
+  it('should redirect to finished page if there is no words page', () => {
+    component.wordsLength = 100;
+    component.page = 101;
+
+    component.ngOnChanges();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/finished']);
   });
 
   describe('answer button', () => {

@@ -23,7 +23,10 @@ export class TestComponent implements OnInit {
 
   ngOnInit() {
     this.page = +this.storageService.get('page') || 1;
-    this.cardsCount = this.dataService.getOneBundle(this.page).length;
+    this.cardsCount =
+      (this.dataService.getOneBundle(this.page) &&
+        this.dataService.getOneBundle(this.page).length) ||
+      0;
     this.wordsLength = this.dataService.getAllWords().length;
     this.completed = this.countCompleted();
   }
@@ -33,16 +36,16 @@ export class TestComponent implements OnInit {
       return;
     }
 
-    if (this.page >= this.wordsLength) {
-      return this.router.navigate(['/finished']);
-    }
-
     this.page++;
     this.answersCounter = 0;
 
     this.storageService.set('page', this.page + '');
-
     this.completed = this.countCompleted();
+
+    if (this.page >= this.wordsLength) {
+      return this.router.navigate(['/finished']);
+    }
+
     window.scrollTo(0, 0);
   }
 
