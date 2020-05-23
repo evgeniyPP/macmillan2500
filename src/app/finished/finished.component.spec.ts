@@ -4,24 +4,28 @@ import { Router } from '@angular/router';
 
 import { FinishedComponent } from './finished.component';
 import { DataService } from '../data.service';
+import { StorageService } from '../storage.service';
 
 describe('FinishedComponent', () => {
   let component: FinishedComponent;
   let fixture: ComponentFixture<FinishedComponent>;
-  let mockRouter, mockDataService;
+  let mockRouter, mockDataService, mockStorageService;
 
   beforeEach(async(() => {
     mockRouter = jasmine.createSpyObj<Router>(['navigate']);
     mockDataService = jasmine.createSpyObj<DataService>([
       'initialize',
+      'getAllWords',
       'getIncorrectWords',
       'setNewWordsFromIncorrect',
     ]);
+    mockStorageService = jasmine.createSpyObj<StorageService>(['get']);
 
     TestBed.configureTestingModule({
       declarations: [FinishedComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: StorageService, useValue: mockStorageService },
         { provide: DataService, useValue: mockDataService },
       ],
     }).compileComponents();
@@ -29,9 +33,9 @@ describe('FinishedComponent', () => {
 
   beforeEach(() => {
     mockDataService.getIncorrectWords.and.returnValue([{}, {}]);
+    mockDataService.getAllWords.and.returnValue([[{}], [{}]]); // 2 pages total
     fixture = TestBed.createComponent(FinishedComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should show outro text', () => {
@@ -40,6 +44,14 @@ describe('FinishedComponent', () => {
     expect(outro.nativeElement.textContent).toContain(
       'Ура! Вы прошли все 2500 слов!'
     );
+  });
+
+  it('should redirect back to homepage if user has not finished his test', () => {
+    mockStorageService.get.and.returnValue(1);
+
+    fixture.detectChanges();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
   });
 
   describe('buttons', () => {
@@ -73,8 +85,14 @@ describe('FinishedComponent', () => {
       });
 
       it('should send a file to download', () => {
-        const spyObj = jasmine.createSpyObj('a', ['click']);
-        spyOn(document, 'createElement').and.returnValue(spyObj);
+        const element = jasmine.createSpyObj('a', [
+          'click',
+          'setAttribute',
+          'style',
+        ]);
+        spyOn(document, 'createElement').and.returnValue(element);
+        spyOn(document.body, 'appendChild').and.callFake(() => null);
+        spyOn(document.body, 'removeChild').and.callFake(() => null);
         const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
         const downloadBtn = buttons[0];
 
@@ -82,11 +100,14 @@ describe('FinishedComponent', () => {
 
         expect(document.createElement).toHaveBeenCalledTimes(1);
         expect(document.createElement).toHaveBeenCalledWith('a');
+        expect(document.body.appendChild).toHaveBeenCalledTimes(1);
+        expect(document.body.removeChild).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('should show the correct title', () => {
       it('when there are more words to learn', () => {
+        fixture.detectChanges();
         const buttons = fixture.debugElement.queryAll(By.css('.next-move'));
 
         expect(buttons[0].nativeElement.title).toEqual(

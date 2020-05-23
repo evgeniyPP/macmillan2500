@@ -1,17 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from './../data.service';
+import { StorageService } from './../storage.service';
 import { IWord } from './../word';
 
 @Component({
   selector: 'app-finished',
   templateUrl: './finished.component.html',
 })
-export class FinishedComponent {
+export class FinishedComponent implements OnInit {
   public incorrectWords: IWord[];
 
-  constructor(private router: Router, private dataService: DataService) {
+  constructor(
+    private router: Router,
+    private dataService: DataService,
+    private storageService: StorageService
+  ) {
     this.incorrectWords = this.dataService.getIncorrectWords();
+  }
+
+  ngOnInit() {
+    const page = +this.storageService.get('page') || 1;
+    const wordsLength = this.dataService.getAllWords().length;
+
+    if (page < wordsLength) {
+      this.router.navigate(['/']);
+    }
   }
 
   moveOn() {
@@ -35,6 +49,7 @@ export class FinishedComponent {
     element.setAttribute('download', 'macmillan-words.txt');
 
     element.style.display = 'none';
+
     document.body.appendChild(element);
 
     element.click();

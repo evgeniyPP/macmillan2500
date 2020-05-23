@@ -13,6 +13,7 @@ import { StorageService } from './../storage.service';
 })
 class MockCardComponent {
   @Input() page: number;
+  @Input() wordsLength: number;
 }
 
 describe('TestComponent', () => {

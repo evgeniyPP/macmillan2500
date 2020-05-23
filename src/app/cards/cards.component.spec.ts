@@ -7,10 +7,11 @@ import { CardsComponent } from './cards.component';
 import { DataService } from './../data.service';
 
 @Component({
-  template: `<app-cards [page]="1"></app-cards>`,
+  template: `<app-cards [page]="1" [wordsLength]="2"></app-cards>`,
 })
 class WrapperComponent {
   page: number;
+  wordsLength: number;
 }
 
 @Component({
